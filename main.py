@@ -1,8 +1,10 @@
 import whisper
 import sounddevice
 import wavio
+import os
 
 
+# Function records audio for use by whisper
 def record_audio():
     frequency = 44400
     duration = 5
@@ -15,9 +17,8 @@ def record_audio():
     wavio.write("out.wav", recording, frequency, sampwidth=2)
 
 
-def run():
-    record_audio()
-
+# Uses whisper to convert speech to text for further use
+def audio_to_text():
     model = whisper.load_model("medium")
 
     audio = whisper.load_audio("out.wav")
@@ -33,6 +34,20 @@ def run():
 
     print(result.text)
 
+    return result.text
 
+
+# Function to clean up any temporary files that are no longer used
+def remove_file(file):
+    os.remove(file)
+
+
+def run():
+    record_audio()
+    audio_to_text()
+    remove_file("out.wav")
+
+
+# Main function, it all starts here
 if __name__ == "__main__":
     run()
